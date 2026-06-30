@@ -156,14 +156,48 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-
 .problem-txt{font-size:15px;line-height:1.65;color:var(--ink-2)}
 .problem-txt strong{color:#fff}
 
-/* ── FLOW ── */
-.flow-wrap{background:var(--bg-card);border:1px solid var(--line);border-radius:20px;padding:28px 28px 24px;overflow:hidden}
-.flow-hint{display:none;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px}
-@media(max-width:860px){.flow-hint{display:flex}}
-.flow-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.flow-scroll svg{display:block;width:100%;min-width:780px;height:auto}
-.flow-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
-.fl-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-4)}
+/* ── CYCLE DIAGRAM ── */
+.cycle-diagram{border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.cycle-top-label{padding:14px 24px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);border-bottom:1px solid var(--line);background:rgba(255,255,255,0.02)}
+.cycle-tasks{display:grid;grid-template-columns:1fr 1fr 1fr}
+.cycle-task{padding:26px 22px 22px;border-right:1px solid var(--line);position:relative}
+.cycle-task:last-child{border-right:none}
+.cycle-task.t-pooling{background:rgba(43,91,255,0.04)}
+.cycle-task.t-kontur{background:rgba(14,196,196,0.04)}
+.cycle-task::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cycle-task.t-pooling::before{background:linear-gradient(90deg,#2B5BFF,#4D78FF)}
+.cycle-task.t-kontur::before{background:linear-gradient(90deg,#0EC4C4,#3DD4D4)}
+.task-num{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:10px}
+.t-pooling .task-num{color:#6B92FF}
+.t-kontur .task-num{color:#3DD4D4}
+.task-name{font-family:var(--display);font-size:clamp(15px,1.5vw,17px);font-weight:700;color:var(--ink-2);line-height:1.2;margin-bottom:10px}
+.task-detail{font-size:13px;color:var(--ink-4);line-height:1.6}
+.task-detail strong{color:var(--ink-3);font-weight:500}
+.cycle-divider{display:none}
+.cycle-modules{display:grid;grid-template-columns:2fr 1fr;border-top:1px solid var(--line)}
+.module-bar{display:flex;align-items:center;gap:14px;padding:15px 22px}
+.module-bar.m-pooling{background:rgba(43,91,255,0.07);border-right:1px solid var(--line)}
+.module-bar.m-kontur{background:rgba(14,196,196,0.06)}
+.module-name{font-family:var(--display);font-size:14px;font-weight:700;white-space:nowrap}
+.m-pooling .module-name{color:#6B92FF}
+.m-kontur .module-name{color:#3DD4D4}
+.module-scope{font-size:12.5px;color:var(--ink-4)}
+.module-tasks-tag{display:flex;gap:6px;margin-left:auto}
+.mtag{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em}
+.m-pooling .mtag{background:rgba(43,91,255,0.18);color:#6B92FF}
+.m-kontur .mtag{background:rgba(14,196,196,0.18);color:#3DD4D4}
+.cycle-bundle{display:flex;align-items:center;flex-wrap:wrap;gap:14px;padding:16px 22px;background:linear-gradient(90deg,rgba(43,91,255,0.08),rgba(14,196,196,0.08));border-top:1px solid var(--line)}
+.bundle-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B92FF;background:rgba(43,91,255,0.15);padding:4px 10px;border-radius:5px;white-space:nowrap}
+.bundle-text{font-size:14px;color:var(--ink-2);font-weight:500;flex:1}
+.bundle-impl{font-size:12px;color:var(--ink-4);white-space:nowrap}
+@media(max-width:720px){
+  .cycle-tasks{grid-template-columns:1fr}
+  .cycle-task{border-right:none;border-bottom:1px solid var(--line)}
+  .cycle-task:last-child{border-bottom:none}
+  .cycle-modules{grid-template-columns:1fr}
+  .module-bar.m-pooling{border-right:none;border-bottom:1px solid var(--line)}
+  .bundle-impl{display:none}
+}
 
 /* ── MISS CARDS ── */
 .miss-card{border-radius:16px;padding:24px 26px}
@@ -388,57 +422,57 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
 <!-- HOW IT WORKS -->
 <section class="section" id="how" style="padding-top:0">
   <div class="container">
-    <span class="eyebrow eyebrow-blue reveal">Архитектура решения</span>
-    <h2 class="h-section mw-680 reveal">Два модуля. Одна цепочка. Ноль ручной работы.</h2>
-    <p class="sub mt-10 reveal" style="max-width:620px">Pooling 1C управляет перевозкой. Контур выпускает документы. Граница ответственности чёткая.</p>
+    <span class="eyebrow eyebrow-blue reveal">Как устроено решение</span>
+    <h2 class="h-section mw-680 reveal">Три задачи. Два модуля. Один контур.</h2>
+    <p class="sub mt-10 reveal" style="max-width:660px">Любая перевозка — это поиск схемы, поиск исполнителя и оформление документов. Pooling 1C закрывает первые две задачи. Адаптер Контура — третью. Вместе — полный цикл в 1С без ручной работы.</p>
 
-    <div class="flow-wrap mt-32 reveal">
-      <div class="flow-hint">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        Прокрути вправо, чтобы увидеть схему целиком
+    <div class="cycle-diagram mt-32 reveal">
+      <!-- Шапка -->
+      <div class="cycle-top-label">Управление перевозкой — это всегда три задачи</div>
+
+      <!-- 3 задачи -->
+      <div class="cycle-tasks">
+        <div class="cycle-task t-pooling">
+          <div class="task-num">ЗАДАЧА 01</div>
+          <div class="task-name">Поиск схемы доставки</div>
+          <div class="task-detail">FTL, сборная или экспедирование — <strong>выбор модели</strong> зависит от груза, маршрута и контрагента. Каждая схема требует своего документа.</div>
+        </div>
+        <div class="cycle-task t-pooling">
+          <div class="task-num">ЗАДАЧА 02</div>
+          <div class="task-name">Поиск исполнителя</div>
+          <div class="task-detail">Тендер или контракт — выбор перевозчика или экспедитора, согласование ТС и водителя, фиксация условий и статусов.</div>
+        </div>
+        <div class="cycle-task t-kontur">
+          <div class="task-num">ЗАДАЧА 03</div>
+          <div class="task-name">Оформление документов</div>
+          <div class="task-detail">ЭТрН, заказ-заявка, поручение экспедитору, экспедиторская расписка — <strong>юридически значимый обмен</strong> с перевозчиком.</div>
+        </div>
       </div>
-      <div class="flow-scroll">
-        <svg viewBox="0 0 1040 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема передачи данных от Pooling 1C через Адаптер Контура к пакету ЭПД">
-          <defs>
-            <marker id="ab" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#2B5BFF"/></marker>
-            <marker id="at" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#0EC4C4"/></marker>
-            <marker id="ag" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#5C677D"/></marker>
-            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <rect x="40" y="28" width="960" height="178" rx="20" fill="rgba(43,91,255,0.04)" stroke="rgba(43,91,255,0.22)" stroke-width="1.5" stroke-dasharray="6 6"/>
-          <text x="64" y="54" font-family="'Spline Sans Mono',monospace" font-size="11.5" font-weight="700" letter-spacing="1.8" fill="#4D78FF">1С ERP</text>
-          <rect x="76" y="72" width="385" height="108" rx="14" fill="rgba(43,91,255,0.1)" stroke="rgba(43,91,255,0.4)" stroke-width="1.5"/>
-          <text x="102" y="106" font-family="'Bricolage Grotesque',sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">Pooling 1C</text>
-          <text x="102" y="128" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">Бронирование: маршрут · перевозчик</text>
-          <text x="102" y="146" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">ТС · водитель · статусы · стоимость</text>
-          <text x="102" y="164" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">история изменений · основания</text>
-          <line x1="461" y1="126" x2="574" y2="126" stroke="#2B5BFF" stroke-width="2.5" marker-end="url(#ab)" filter="url(#glow)"/>
-          <rect x="471" y="108" width="94" height="20" rx="5" fill="rgba(43,91,255,0.15)"/>
-          <text x="518" y="122" text-anchor="middle" font-family="'Spline Sans Mono',monospace" font-size="10" font-weight="700" fill="#6B92FF" letter-spacing="0.5">данные перевозки</text>
-          <rect x="578" y="72" width="385" height="108" rx="14" fill="rgba(14,196,196,0.08)" stroke="rgba(14,196,196,0.35)" stroke-width="1.5"/>
-          <text x="604" y="106" font-family="'Bricolage Grotesque',sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">Адаптер Контура</text>
-          <text x="604" y="128" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">ЭТрН · заказ-заявка</text>
-          <text x="604" y="146" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">экспедиторская расписка</text>
-          <text x="604" y="164" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">поручение экспедитору</text>
-          <rect x="76" y="306" width="385" height="90" rx="14" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-          <text x="102" y="338" font-family="'Bricolage Grotesque',sans-serif" font-size="16" font-weight="700" fill="#E2E6F0">Перевозчик / экспедитор</text>
-          <text x="102" y="360" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">Заявка туда · статусы и данные ТС обратно</text>
-          <text x="102" y="378" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">данные водителя · подтверждения</text>
-          <rect x="578" y="306" width="385" height="90" rx="14" fill="rgba(14,196,196,0.1)" stroke="rgba(14,196,196,0.4)" stroke-width="1.5"/>
-          <text x="604" y="338" font-family="'Bricolage Grotesque',sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Пакет ЭПД выпущен</text>
-          <text x="604" y="360" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#3DD4D4">Юридически значимый</text>
-          <text x="604" y="378" font-family="'Hanken Grotesk',sans-serif" font-size="12.5" fill="#9BA8BF">Подписи всех сторон · статус в 1С</text>
-          <line x1="230" y1="180" x2="230" y2="300" stroke="rgba(255,255,255,0.2)" stroke-width="1.8" marker-end="url(#ag)"/>
-          <line x1="280" y1="300" x2="280" y2="180" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="4 5" marker-end="url(#ag)"/>
-          <line x1="770" y1="180" x2="770" y2="300" stroke="#0EC4C4" stroke-width="2.25" marker-end="url(#at)" filter="url(#glow)"/>
-          <path d="M963,351 L1002,351 L1002,126 L969,126" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#ag)"/>
-          <text x="1016" y="255" font-family="'Spline Sans Mono',monospace" font-size="10" fill="#5C677D" transform="rotate(90,1016,255)" text-anchor="middle">статусы · документы → 1С</text>
-        </svg>
+
+      <!-- Покрытие модулями -->
+      <div class="cycle-modules">
+        <div class="module-bar m-pooling">
+          <span class="module-name">Pooling 1C</span>
+          <span class="module-scope">закрывает поиск схемы и поиск исполнителя внутри 1С ERP</span>
+          <span class="module-tasks-tag">
+            <span class="mtag">01</span>
+            <span class="mtag">02</span>
+          </span>
+        </div>
+        <div class="module-bar m-kontur">
+          <span class="module-name">Адаптер Контура</span>
+          <span class="module-scope">формирует и обменивает пакет ЭПД</span>
+          <span class="module-tasks-tag">
+            <span class="mtag">03</span>
+          </span>
+        </div>
       </div>
-      <div class="flow-legend">
-        <div class="fl-item"><span style="width:20px;border-top:2.5px solid #2B5BFF;display:block;flex-shrink:0"></span>данные перевозки → в адаптер</div>
-        <div class="fl-item"><span style="width:20px;border-top:2.5px solid #0EC4C4;display:block;flex-shrink:0"></span>выпуск пакета ЭПД</div>
-        <div class="fl-item"><span style="width:20px;border-top:2px dashed rgba(255,255,255,0.2);display:block;flex-shrink:0"></span>статусы и документы → обратно в 1С</div>
+
+      <!-- Результат бандла -->
+      <div class="cycle-bundle">
+        <span class="bundle-badge">БАНДЛ</span>
+        <span class="bundle-text">Весь цикл в 1С — от поиска перевозчика и выбора схемы до подписанного ЭПД. Без ручной работы.</span>
+        <span class="bundle-impl">Pooling внедряет под ключ</span>
       </div>
     </div>
 
