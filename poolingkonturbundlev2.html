@@ -94,6 +94,33 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-
 .hero-sub strong{color:var(--ink-2)}
 .hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 
+/* ── HERO FLOW ── */
+.hero-flow{display:flex;align-items:stretch;gap:0;margin:36px 0 38px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-card)}
+.hf-step{flex:1;padding:18px 18px 16px;position:relative;border-right:1px solid var(--line)}
+.hf-step:last-of-type{border-right:none}
+.hf-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.hf-step.hf-blue::before{background:linear-gradient(90deg,#2B5BFF,#4D78FF)}
+.hf-step.hf-teal::before{background:linear-gradient(90deg,#0EC4C4,#3DD4D4)}
+.hf-step.hf-result::before{background:linear-gradient(90deg,#0EC4C4,#2B5BFF)}
+.hf-n{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.hf-blue .hf-n{color:#6B92FF}
+.hf-teal .hf-n,.hf-result .hf-n{color:#3DD4D4}
+.hf-title{font-family:var(--display);font-size:13.5px;font-weight:700;color:var(--ink-2);line-height:1.25;margin-bottom:8px}
+.hf-detail{font-size:11.5px;color:var(--ink-4);line-height:1.5;margin-bottom:10px}
+.hf-badge{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.hf-badge.badge-p{background:rgba(43,91,255,0.15);color:#6B92FF}
+.hf-badge.badge-k{background:rgba(14,196,196,0.15);color:#3DD4D4}
+.hf-badge.badge-ok{background:rgba(43,255,140,0.12);color:#4ADE80}
+.hf-connector{display:flex;align-items:center;justify-content:center;padding:0 4px;color:var(--line);font-size:18px;flex-shrink:0;align-self:center}
+.hf-result{flex:1.1;background:linear-gradient(135deg,rgba(43,91,255,0.06),rgba(14,196,196,0.06));border-right:none}
+.hf-result .hf-title{font-size:14px}
+@media(max-width:800px){
+  .hero-flow{flex-direction:column}
+  .hf-step,.hf-result{border-right:none;border-bottom:1px solid var(--line)}
+  .hf-result{border-bottom:none}
+  .hf-connector{display:none}
+}
+
 /* ── HERO STATS ── */
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:56px}
 .stat-cell{background:var(--bg-card);padding:22px 20px}
@@ -343,13 +370,41 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
       Весь процесс в 1С. Без ручной работы.
     </h1>
     <p class="hero-sub reveal">
-      Управление перевозкой — это не только документы. Это выбор схемы доставки (FTL, сборная, экспедирование),
-      выбор перевозчика через контрактные условия или тендер, понимание — отправлять поручение экспедитору или заказ-заявку.
-      Адаптер Контура закрывает формирование ЭПД, но <strong>не закрывает блок поиска и выбора модели доставки.</strong>
-      Pooling 1C закрывает его — и передаёт в адаптер уже структурированные данные для выпуска
-      <strong>юридически значимых ЭТрН, заказ-заявки, экспедиторской расписки, поручения.</strong>
-      Вместе — не часть процесса, а весь транспортно-документарный контур.
+      Любая перевозка — это три задачи: <strong>выбрать схему доставки, найти исполнителя, оформить документы.</strong>
+      Адаптер Контура закрывает только третью. Pooling 1C закрывает первые две — и передаёт данные в адаптер автоматически.
     </p>
+
+    <!-- Мини-схема трёх задач -->
+    <div class="hero-flow reveal">
+      <div class="hf-step hf-blue">
+        <div class="hf-n">ЗАДАЧА 01</div>
+        <div class="hf-title">Поиск схемы доставки</div>
+        <div class="hf-detail">FTL, сборная, экспедирование — модель под груз и маршрут</div>
+        <span class="hf-badge badge-p">Pooling 1C</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-blue">
+        <div class="hf-n">ЗАДАЧА 02</div>
+        <div class="hf-title">Поиск исполнителя</div>
+        <div class="hf-detail">Перевозчик, ТС, водитель — через тендер или контракт</div>
+        <span class="hf-badge badge-p">Pooling 1C</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-teal">
+        <div class="hf-n">ЗАДАЧА 03</div>
+        <div class="hf-title">Оформление документов</div>
+        <div class="hf-detail">ЭТрН, заказ-заявка, поручение, расписка — юридически значимо</div>
+        <span class="hf-badge badge-k">Адаптер Контура</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-result">
+        <div class="hf-n">РЕЗУЛЬТАТ</div>
+        <div class="hf-title">Весь цикл в 1С</div>
+        <div class="hf-detail">Без ручной работы, без Excel, без внешних TMS</div>
+        <span class="hf-badge badge-ok">Бандл Pooling × Контур</span>
+      </div>
+    </div>
+
     <div class="hero-actions reveal">
       <a href="#cta" class="btn btn-primary btn-primary-lg">Подключить клиента →</a>
       <a href="#how" class="btn btn-ghost">Как устроено</a>
