@@ -304,15 +304,17 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
       Совместный продукт Pooling × Контур
     </div>
     <h1 class="reveal">
-      Перевозка <span class="accent">управляется</span> в 1С.
-      ЭПД выпускается <span class="accent">автоматически</span>.
-      Данные не переносятся руками.
+      От поиска перевозчика —
+      до <span class="accent">подписанного ЭПД</span>.
+      Весь процесс в 1С. Без ручной работы.
     </h1>
     <p class="hero-sub reveal">
-      Pooling 1C создаёт объект перевозки внутри 1С ERP — маршрут, перевозчик, ТС, водитель, статусы.
-      Адаптер Контура забирает эти данные и выпускает
-      <strong>юридически значимые ЭТрН, заказ-заявку, экспедиторскую расписку, поручение.</strong>
-      Это не интеграция двух систем — это один транспортно-документарный контур.
+      Управление перевозкой — это не только документы. Это выбор схемы доставки (FTL, сборная, экспедирование),
+      выбор перевозчика через контрактные условия или тендер, понимание — отправлять поручение экспедитору или заказ-заявку.
+      Адаптер Контура закрывает формирование ЭПД, но <strong>не закрывает блок поиска и выбора модели доставки.</strong>
+      Pooling 1C закрывает его — и передаёт в адаптер уже структурированные данные для выпуска
+      <strong>юридически значимых ЭТрН, заказ-заявки, экспедиторской расписки, поручения.</strong>
+      Вместе — не часть процесса, а весь транспортно-документарный контур.
     </p>
     <div class="hero-actions reveal">
       <a href="#cta" class="btn btn-primary btn-primary-lg">Подключить клиента →</a>
@@ -329,8 +331,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
         <div class="stat-lbl">ЭТрН, заказ-заявка, расписка, поручение — на одной логике</div>
       </div>
       <div class="stat-cell">
-        <div class="stat-num">1 объект</div>
-        <div class="stat-lbl">Бронирование — центр перевозки внутри 1С ERP</div>
+        <div class="stat-num">Весь цикл</div>
+        <div class="stat-lbl">от поиска перевозчика и выбора схемы — до готового ЭПД</div>
       </div>
       <div class="stat-cell">
         <div class="stat-num">Bacardi</div>
@@ -355,24 +357,28 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
 <section class="section">
   <div class="container">
     <span class="eyebrow eyebrow-blue reveal">Почему клиенты застревают</span>
-    <h2 class="h-section mw-660 reveal">Четыре боли, с которыми к вам приходят</h2>
+    <h2 class="h-section mw-660 reveal">Пять болей, с которыми к вам приходят</h2>
     <p class="sub mt-10 reveal" style="max-width:620px">Каждая решается связкой. Используй как открытие разговора.</p>
 
     <div class="problem-list mt-28">
       <div class="problem-item reveal">
         <span class="problem-num">01</span>
-        <p class="problem-txt"><strong>«Данные разбросаны по TMS, Excel, почте и мессенджерам перевозчика»</strong> — логист тратит часы на сбор информации для одной ЭТрН. При 50+ рейсах в месяц это производственная проблема.</p>
+        <p class="problem-txt"><strong>«Логист не понимает, по какой модели отправлять задание перевозчику»</strong> — FTL может идти как по прямому договору, так и через экспедитора. Каждый вариант требует своего документа: поручение экспедитору или заказ-заявка. Без структурированных данных в 1С это решается вручную каждый раз.</p>
       </div>
       <div class="problem-item reveal">
         <span class="problem-num">02</span>
-        <p class="problem-txt"><strong>«Нам нужно ЭТрН, но мы не знаем с чего начать — у нас алкоголь, ЕГАИС, несколько экспедиторов»</strong> — сложные сценарии откладываются на «потом» годами. Потом станет обязательным.</p>
+        <p class="problem-txt"><strong>«Данные разбросаны по TMS, Excel, почте и мессенджерам перевозчика»</strong> — логист тратит часы на сбор информации для одной ЭТрН. При 50+ рейсах в месяц это производственная проблема.</p>
       </div>
       <div class="problem-item reveal">
         <span class="problem-num">03</span>
-        <p class="problem-txt"><strong>«IT написали кастомную интеграцию под ЭПД, но она ломается на каждом новом XML-сценарии»</strong> — поддержка кастомного backend съедает больше ресурсов, чем само решение.</p>
+        <p class="problem-txt"><strong>«Нам нужно ЭТрН, но мы не знаем с чего начать — у нас алкоголь, ЕГАИС, несколько экспедиторов»</strong> — сложные сценарии откладываются на «потом» годами. Потом станет обязательным.</p>
       </div>
       <div class="problem-item reveal">
         <span class="problem-num">04</span>
+        <p class="problem-txt"><strong>«IT написали кастомную интеграцию под ЭПД, но она ломается на каждом новом XML-сценарии»</strong> — поддержка кастомного backend съедает больше ресурсов, чем само решение.</p>
+      </div>
+      <div class="problem-item reveal">
+        <span class="problem-num">05</span>
         <p class="problem-txt"><strong>«Мы управляем перевозкой вне 1С, поэтому бухгалтерия всё время просит данные заново»</strong> — данные перевозки не живут в 1С ERP, а значит каждый документ — ручная работа.</p>
       </div>
     </div>
@@ -441,8 +447,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
         <div class="ico ico-blue">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
         </div>
-        <h3 class="h-card" style="color:#fff">Pooling 1C — управляет жизненным циклом перевозки</h3>
-        <p class="sub mt-10" style="font-size:14px">Внутри 1С ERP появляется объект Бронирование — центр перевозки. Хранит: маршрут, даты, паллеты, FTL/LTL, перевозчика, конечного перевозчика, водителя, ТС, статусы, стоимость, историю изменений.</p>
+        <h3 class="h-card" style="color:#fff">Pooling 1C — закрывает весь цикл управления перевозкой</h3>
+        <p class="sub mt-10" style="font-size:14px">Внутри 1С ERP появляется объект Бронирование — центр перевозки. Закрывает блок поиска транспорта и выбора схемы доставки (FTL, сборная, экспедирование), определяет модель документа (поручение или заказ-заявка) и хранит всё: маршрут, даты, перевозчика, ТС, водителя, статусы, стоимость, историю изменений.</p>
       </div>
       <div class="card reveal">
         <div class="ico ico-teal">
@@ -456,7 +462,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
     <div class="grid-2 mt-16">
       <div class="miss-card miss-rose reveal">
         <span class="miss-lbl lbl-rose">⚡ Без Pooling 1C</span>
-        <p class="miss-body">Контур умеет формировать документы — но им нужна основа: роли сторон, статусы, перевозчик, ТС, водитель, основания. <strong>Эти данные неоткуда взять без Pooling 1C.</strong></p>
+        <p class="miss-body">Адаптер Контура не закрывает блок поиска перевозчика и выбора схемы доставки. Логист по-прежнему вручную разбирается — FTL идёт по прямому договору или через экспедитора, и какой документ выписывать. <strong>Без Pooling 1C эта часть процесса остаётся неавтоматизированной.</strong></p>
       </div>
       <div class="miss-card miss-amber reveal">
         <span class="miss-lbl lbl-amber">⚡ Без адаптера Контура</span>
@@ -474,8 +480,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
     <div class="grid-3 mt-32">
       <div class="card reveal">
         <div class="ico ico-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
-        <h3 class="h-card" style="color:#fff;font-size:16px">Единый источник данных</h3>
-        <p class="sub mt-10" style="font-size:13.5px">Все параметры перевозки — в Бронировании. Не в TMS, не в Excel, не в переписке с перевозчиком.</p>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Весь цикл — не часть</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Поиск транспорта, выбор схемы доставки, определение модели документа, формирование ЭПД — всё в одной связке. Не часть вопросов, а все элементы управления перевозкой.</p>
       </div>
       <div class="card reveal">
         <div class="ico ico-teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
@@ -521,16 +527,16 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
     <div id="tab-pooling" class="tab-panel active reveal">
       <div class="seller-card seller-card-p">
         <span class="seller-tag tag-p">Команда Pooling</span>
-        <h3>Если клиент спрашивает про TMS или ЭТрН в 1С</h3>
-        <p class="seller-intro">Твой продукт берёт логику перевозки — покажи что это не просто модуль, а центр управления транспортом внутри 1С. Контур закрывает то, что Pooling не делает — юридически значимый обмен.</p>
+        <h3>Если клиент говорит про управление перевозкой или ЭТрН в 1С</h3>
+        <p class="seller-intro">Твой продукт закрывает не только документы — он закрывает весь процесс: поиск транспорта, выбор схемы, определение модели документа. Контур закрывает то, что Pooling не делает — юридически значимый обмен. Вместе — полный цикл без трудозатрат.</p>
         <div class="pitch-list">
           <div class="pitch-item">
             <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Питч:</strong> «Pooling 1C даёт перевозке структуру в 1С. Без этой структуры — ни один оператор ЭДО не сможет корректно сформировать ЭТрН»</span>
+            <span><strong>Питч:</strong> «Адаптер Контура сам не знает, нужно ли поручение экспедитору или заказ-заявка. Pooling 1C это определяет автоматически — по схеме доставки в Бронировании»</span>
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Демо-сценарий:</strong> Показать Бронирование → как данные передаются в адаптер → готовый ЭТрН. Без переноса руками.</span>
+            <span><strong>Демо-сценарий:</strong> Показать Бронирование → выбор схемы FTL/экспедирование → автоматический тип документа → готовый ЭТрН. Без переноса руками.</span>
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
@@ -538,7 +544,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Bacardi-кейс</strong> — промышленная эксплуатация, не пилот: алкоголь, ЕГАИС, аутбаунд, инбаунд, утилизация.</span>
+            <span><strong>Внедрение под ключ:</strong> Pooling устанавливает решение полностью — у команды большой опыт реализации ЭДО-проектов на базе адаптера Контура. Клиент не тратит ресурсы на интеграцию.</span>
           </div>
         </div>
       </div>
@@ -547,24 +553,24 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
     <div id="tab-kontur" class="tab-panel reveal">
       <div class="seller-card seller-card-k">
         <span class="seller-tag tag-k">Команда Контур</span>
-        <h3>Если клиент спрашивает про ЭПД и не знает откуда брать данные</h3>
-        <p class="seller-intro">Адаптер умеет выпускать документы — но ему нужны правильные данные. Без Pooling 1C клиент либо настраивает кастомный маппинг, либо заносит данные вручную. Это и есть боль.</p>
+        <h3>Если клиент спрашивает про ЭПД, но процесс выбора перевозчика не выстроен</h3>
+        <p class="seller-intro">Адаптер закрывает формирование документов — но не закрывает блок поиска перевозчика и выбора схемы. Без этого логист по-прежнему вручную решает: FTL или экспедирование, поручение или заказ-заявка. Pooling 1C снимает этот вопрос.</p>
         <div class="pitch-list">
           <div class="pitch-item">
             <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Питч:</strong> «Адаптер Контура работает с любым источником данных. Но лучший источник для 1С-клиента — Pooling 1C: данные уже в нужной структуре, ничего руками»</span>
+            <span><strong>Питч:</strong> «Адаптер Контура не знает, нужно ли поручение или заказ-заявка — это решается на уровне схемы доставки. Pooling 1C фиксирует схему в Бронировании, и адаптер автоматически получает нужный тип документа»</span>
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Для финдира:</strong> «Вместо двух проектов внедрения — один контур, одно окно поддержки по транспорту и документам»</span>
+            <span><strong>Для финдира:</strong> «Вместо двух проектов внедрения — один контур, одно окно поддержки по транспорту и документам. Трудозатраты после перехода не растут»</span>
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Аргумент против «сами напишем»:</strong> «Кастомный backend работает до первого нового XML-сценария. Потом — снова разработка»</span>
+            <span><strong>Аргумент против «сами напишем»:</strong> «Кастомный backend работает до первого нового XML-сценария или нового типа доставки. Потом — снова разработка»</span>
           </div>
           <div class="pitch-item">
             <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><strong>Referral:</strong> Передать лид в Pooling на Pooling 1C → совместный онбординг → быстрее к первому ЭТрН.</span>
+            <span><strong>Referral:</strong> Передать лид в Pooling — они внедряют под ключ и берут на себя весь блок управления перевозкой. Совместный онбординг → быстрее к первому ЭТрН.</span>
           </div>
         </div>
       </div>
@@ -645,8 +651,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 34px}
   <div class="container">
     <div class="cta-inner reveal">
       <div class="cta-pill">Следующий шаг</div>
-      <h2>Подключить клиента к <span class="accent">бандлу</span> — это один звонок</h2>
-      <p>Расскажи о клиенте: отрасль, сколько перевозок в месяц, есть ли 1С ERP, какие сценарии нужны. Поможем сформировать предложение и провести совместное демо.</p>
+      <h2>Закрыть весь процесс клиента — <span class="accent">от поиска до ЭПД</span></h2>
+      <p>Расскажи о клиенте: отрасль, сколько перевозок в месяц, какие схемы доставки используют (FTL, сборная, экспедирование), есть ли 1С ERP. Поможем сформировать предложение и провести совместное демо. Pooling внедряет под ключ.</p>
       <div class="cta-actions">
         <a href="https://pooling.me/consultation" class="btn btn-primary btn-primary-lg">Предложить клиенту бандл →</a>
         <a href="https://t.me/pooling_sales" class="btn btn-teal" style="font-size:15px;padding:14px 22px;border-radius:11px">
