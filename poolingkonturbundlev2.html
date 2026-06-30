@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pooling 1C + Контур — Бандл · ЭПД без ручной работы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090F;
+  --bg-card:#0D1120;
+  --bg-card2:#111827;
+  --bg-light:#F4F6FB;
+  --ink:#FFFFFF;
+  --ink-2:#E2E6F0;
+  --ink-3:#9BA8BF;
+  --ink-4:#7B8FAA;
+  --line:rgba(255,255,255,0.08);
+  --line-m:rgba(255,255,255,0.13);
+  --blue:#2B5BFF;
+  --blue-b:#4D78FF;
+  --teal:#0EC4C4;
+  --green:#12C97A;
+  --amber:#F5A623;
+  --rose:#FF4D5E;
+  --sans:'Hanken Grotesk','Segoe UI',system-ui,sans-serif;
+  --display:'Bricolage Grotesque','Hanken Grotesk',sans-serif;
+  --mono:'Spline Sans Mono','SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+/* ── SCROLL PROGRESS ── */
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--blue),var(--teal));z-index:300;pointer-events:none;transition:width .1s linear}
+
+/* ── LAYOUT ── */
+.container{width:100%;max-width:1120px;margin:0 auto;padding:0 36px}
+@media(max-width:720px){.container{padding:0 20px}}
+
+/* ── NAV ── */
+.topnav{padding:16px 0;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px)}
+.topnav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:15px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:20px;height:20px;flex-shrink:0;background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20262%20262'%20fill='%23FFFFFF'%3E%3Cpath%20d='M202.015%20120.378C235.059%20120.378%20261.845%2093.4308%20261.845%2060.1892C261.845%2026.9476%20235.059%200%20202.015%200C168.972%200%20142.185%2026.9476%20142.185%2060.1892C142.185%2093.4308%20168.972%20120.378%20202.015%20120.378Z'/%3E%3Cpath%20d='M202.015%20262C235.059%20262%20261.845%20235.052%20261.845%20201.811C261.845%20168.569%20235.059%20141.622%20202.015%20141.622C168.972%20141.622%20142.185%20168.569%20142.185%20201.811C142.185%20235.052%20168.972%20262%20202.015%20262Z'/%3E%3Cpath%20d='M60.0449%200.0477905C93.2066%200.0477905%20120.09%2026.9242%20120.09%2060.0781C120.09%2093.2321%2093.2068%20120.109%2060.0449%20120.109C26.8831%20120.109%200%2093.2321%200%2060.0781C0.000239203%2026.9242%2026.8833%200.0478401%2060.0449%200.0477905ZM60.043%2021.8769C38.9403%2021.877%2021.8332%2038.9803%2021.833%2060.0781C21.833%2081.176%2038.9401%2098.2801%2060.043%2098.2802C81.146%2098.2802%2098.2539%2081.1761%2098.2539%2060.0781C98.2537%2038.9802%2081.1458%2021.8769%2060.043%2021.8769Z'/%3E%3Cpath%20d='M60.1821%20262C93.4198%20262%20120.364%20235.052%20120.364%20201.811C120.364%20168.569%2093.4198%20141.622%2060.1821%20141.622C26.9445%20141.622%200%20168.569%200%20201.811C0%20235.052%2026.9445%20262%2060.1821%20262Z'/%3E%3C/svg%3E") center/contain no-repeat}
+.x-sep{color:var(--ink-4);font-weight:400;font-size:18px;line-height:1}
+.partner-label{color:var(--ink-3)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(43,91,255,0.16);border:1px solid rgba(43,91,255,0.38);border-radius:999px;padding:5px 13px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7FA0FF}
+.nav-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#4D78FF;animation:pulse-dot 1.8s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.65)}}
+@media(max-width:580px){.nav-badge{display:none}}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:background .18s,transform .14s,border-color .18s;white-space:nowrap;font-family:var(--sans)}
+.btn-primary{background:var(--blue);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px}
+.btn-primary:hover{background:var(--blue-b);transform:translateY(-1px)}
+.btn-primary-lg{font-size:16px;padding:15px 30px;border-radius:12px}
+.btn-ghost{background:transparent;color:var(--ink-2);padding:10px 18px;border-radius:10px;font-size:14px;border:1px solid var(--line-m)}
+.btn-ghost:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.22)}
+.btn-teal{background:rgba(14,196,196,0.13);color:var(--teal);border:1px solid rgba(14,196,196,0.3);padding:10px 18px;border-radius:10px;font-size:14px}
+.btn-teal:hover{background:rgba(14,196,196,0.22)}
+
+/* ── DEADLINE BAR ── */
+.deadline{background:linear-gradient(135deg,rgba(43,91,255,0.11),rgba(14,196,196,0.06));border-bottom:1px solid rgba(43,91,255,0.18);padding:18px 0}
+.deadline-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.deadline-label{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#6B92FF;flex-shrink:0}
+.deadline-units{display:flex;align-items:flex-end;gap:2px;flex-shrink:0}
+.deadline-unit{display:flex;flex-direction:column;align-items:center;min-width:56px}
+.deadline-num{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-0.04em;line-height:1;background:linear-gradient(135deg,#fff,#8AABFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.deadline-unit-lbl{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);margin-top:3px}
+.deadline-colon{font-family:var(--display);font-size:24px;font-weight:300;color:rgba(255,255,255,0.18);padding-bottom:14px;flex-shrink:0;line-height:1}
+.deadline-copy{font-size:13px;color:var(--ink-3);line-height:1.5;margin-left:auto}
+.deadline-copy strong{color:#FFD280}
+@media(max-width:680px){
+  .deadline-inner{gap:14px}
+  .deadline-copy{margin-left:0;width:100%;order:3}
+  .deadline-num{font-size:26px}
+  .deadline-unit{min-width:46px}
+}
+
+/* ── HERO ── */
+.hero{padding:88px 0 72px;position:relative;overflow:hidden}
+.hero-glow-1{position:absolute;width:900px;height:600px;background:radial-gradient(ellipse,rgba(43,91,255,0.2) 0%,transparent 65%);top:-120px;left:-150px;pointer-events:none}
+.hero-glow-2{position:absolute;width:600px;height:500px;background:radial-gradient(ellipse,rgba(14,196,196,0.1) 0%,transparent 65%);top:0;right:-60px;pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;mask-image:radial-gradient(ellipse 80% 70% at 30% 30%,#000 0%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 30% 30%,#000 0%,transparent 80%)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:9px;background:rgba(43,91,255,0.13);border:1px solid rgba(43,91,255,0.3);border-radius:999px;padding:7px 16px;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7FA0FF;margin-bottom:26px}
+.hero-dot{width:7px;height:7px;border-radius:50%;background:var(--blue-b);animation:pulse-dot 2s ease-in-out infinite}
+.hero h1{font-family:var(--display);font-size:clamp(30px,4.2vw,56px);line-height:1.07;letter-spacing:-0.03em;font-weight:800;max-width:860px;margin-bottom:22px}
+.hero h1 .accent{background:linear-gradient(135deg,#4D78FF,#0EC4C4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.35vw,17.5px);line-height:1.72;color:var(--ink-3);max-width:650px;margin-bottom:34px}
+.hero-sub strong{color:var(--ink-2)}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
+/* ── HERO FLOW ── */
+.hero-flow{display:flex;align-items:stretch;gap:0;margin:36px 0 38px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-card)}
+.hf-step{flex:1;padding:18px 18px 16px;position:relative;border-right:1px solid var(--line)}
+.hf-step:last-of-type{border-right:none}
+.hf-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.hf-step.hf-blue::before{background:linear-gradient(90deg,#2B5BFF,#4D78FF)}
+.hf-step.hf-teal::before{background:linear-gradient(90deg,#0EC4C4,#3DD4D4)}
+.hf-step.hf-result::before{background:linear-gradient(90deg,#0EC4C4,#2B5BFF)}
+.hf-n{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.hf-blue .hf-n{color:#6B92FF}
+.hf-teal .hf-n,.hf-result .hf-n{color:#3DD4D4}
+.hf-title{font-family:var(--display);font-size:13.5px;font-weight:700;color:var(--ink-2);line-height:1.25;margin-bottom:8px}
+.hf-detail{font-size:11.5px;color:var(--ink-4);line-height:1.5;margin-bottom:10px}
+.hf-badge{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.hf-badge.badge-p{background:rgba(43,91,255,0.15);color:#6B92FF}
+.hf-badge.badge-k{background:rgba(14,196,196,0.15);color:#3DD4D4}
+.hf-badge.badge-ok{background:rgba(43,255,140,0.12);color:#4ADE80}
+.hf-connector{display:flex;align-items:center;justify-content:center;padding:0 4px;color:var(--line);font-size:18px;flex-shrink:0;align-self:center}
+.hf-result{flex:1.1;background:linear-gradient(135deg,rgba(43,91,255,0.06),rgba(14,196,196,0.06));border-right:none}
+.hf-result .hf-title{font-size:14px}
+@media(max-width:800px){
+  .hero-flow{flex-direction:column}
+  .hf-step,.hf-result{border-right:none;border-bottom:1px solid var(--line)}
+  .hf-result{border-bottom:none}
+  .hf-connector{display:none}
+}
+
+/* ── HERO STATS ── */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:56px}
+.stat-cell{background:var(--bg-card);padding:22px 20px}
+.stat-num{font-family:var(--display);font-size:28px;font-weight:800;letter-spacing:-0.025em;background:linear-gradient(135deg,#fff,#9BB0FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.stat-lbl{margin-top:7px;font-size:12.5px;line-height:1.5;color:var(--ink-4)}
+@media(max-width:820px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.hero-stats{grid-template-columns:1fr}}
+
+/* ── URGENCY ── */
+.urgency{background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(255,77,94,0.06));border-top:1px solid rgba(245,166,35,0.17);border-bottom:1px solid rgba(245,166,35,0.17);padding:18px 0}
+.urgency-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.urgency-ico{width:36px;height:36px;border-radius:9px;background:rgba(245,166,35,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.urgency-txt{font-size:14px;line-height:1.55;color:var(--ink-2);flex:1;min-width:220px}
+.urgency-txt strong{color:#FFD280}
+.urgency-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.28);border-radius:999px;padding:5px 13px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#F5A623;white-space:nowrap;flex-shrink:0}
+
+/* ── SECTION BASICS ── */
+.section{padding:80px 0}
+.section-alt{background:var(--bg-card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.section-light{background:var(--bg-light);color:#0B0F1A}
+.eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);margin-bottom:14px;display:block}
+.eyebrow-blue{color:#6B92FF}
+.section-light .eyebrow{color:#7B8499}
+.section-light .eyebrow-blue{color:#1B4DFF}
+.h-section{font-family:var(--display);font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-0.026em;font-weight:800}
+.h-card{font-family:var(--display);font-size:17px;line-height:1.25;letter-spacing:-0.012em;font-weight:700}
+.sub{font-size:15px;line-height:1.72;color:var(--ink-3)}
+.section-light .h-section,.section-light .h-card{color:#0B0F1A}
+.section-light .sub{color:#4B5366}
+.mt-10{margin-top:10px}
+.mt-16{margin-top:16px}
+.mt-20{margin-top:20px}
+.mt-28{margin-top:28px}
+.mt-32{margin-top:32px}
+.mt-40{margin-top:40px}
+.mw-660{max-width:660px}
+.mw-680{max-width:680px}
+
+/* ── CARDS ── */
+.card{background:var(--bg-card);border:1px solid var(--line);border-radius:18px;padding:28px;transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--line-m)}
+.ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:44px;height:44px;border-radius:12px;margin-bottom:16px}
+.ico-blue{background:rgba(43,91,255,0.13);color:#6B92FF}
+.ico-teal{background:rgba(14,196,196,0.13);color:var(--teal)}
+.ico-green{background:rgba(18,201,122,0.13);color:var(--green)}
+.ico-amber{background:rgba(245,166,35,0.13);color:var(--amber)}
+.ico-rose{background:rgba(255,77,94,0.13);color:var(--rose)}
+
+/* ── GRIDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ── PROBLEMS ── */
+.problem-list{display:flex;flex-direction:column;gap:12px}
+.problem-item{display:flex;align-items:flex-start;gap:14px;background:rgba(255,77,94,0.05);border:1px solid rgba(255,77,94,0.13);border-radius:14px;padding:18px 20px;transition:border-color .2s}
+.problem-item:hover{border-color:rgba(255,77,94,0.28)}
+.problem-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--rose);background:rgba(255,77,94,0.13);border-radius:7px;padding:4px 9px;flex-shrink:0;margin-top:2px}
+.problem-txt{font-size:15px;line-height:1.65;color:var(--ink-2)}
+.problem-txt strong{color:#fff}
+
+/* ── CYCLE DIAGRAM ── */
+.cycle-diagram{border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.cycle-top-label{padding:14px 24px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);border-bottom:1px solid var(--line);background:rgba(255,255,255,0.02)}
+.cycle-tasks{display:grid;grid-template-columns:1fr 1fr 1fr}
+.cycle-task{padding:26px 22px 22px;border-right:1px solid var(--line);position:relative}
+.cycle-task:last-child{border-right:none}
+.cycle-task.t-pooling{background:rgba(43,91,255,0.04)}
+.cycle-task.t-kontur{background:rgba(14,196,196,0.04)}
+.cycle-task::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cycle-task.t-pooling::before{background:linear-gradient(90deg,#2B5BFF,#4D78FF)}
+.cycle-task.t-kontur::before{background:linear-gradient(90deg,#0EC4C4,#3DD4D4)}
+.task-num{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:10px}
+.t-pooling .task-num{color:#6B92FF}
+.t-kontur .task-num{color:#3DD4D4}
+.task-name{font-family:var(--display);font-size:clamp(15px,1.5vw,17px);font-weight:700;color:var(--ink-2);line-height:1.2;margin-bottom:10px}
+.task-detail{font-size:13px;color:var(--ink-4);line-height:1.6}
+.task-detail strong{color:var(--ink-3);font-weight:500}
+.cycle-divider{display:none}
+.cycle-modules{display:grid;grid-template-columns:2fr 1fr;border-top:1px solid var(--line)}
+.module-bar{display:flex;align-items:center;gap:14px;padding:15px 22px}
+.module-bar.m-pooling{background:rgba(43,91,255,0.07);border-right:1px solid var(--line)}
+.module-bar.m-kontur{background:rgba(14,196,196,0.06)}
+.module-name{font-family:var(--display);font-size:14px;font-weight:700;white-space:nowrap}
+.m-pooling .module-name{color:#6B92FF}
+.m-kontur .module-name{color:#3DD4D4}
+.module-scope{font-size:12.5px;color:var(--ink-4)}
+.module-tasks-tag{display:flex;gap:6px;margin-left:auto}
+.mtag{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em}
+.m-pooling .mtag{background:rgba(43,91,255,0.18);color:#6B92FF}
+.m-kontur .mtag{background:rgba(14,196,196,0.18);color:#3DD4D4}
+.cycle-bundle{display:flex;align-items:center;flex-wrap:wrap;gap:14px;padding:16px 22px;background:linear-gradient(90deg,rgba(43,91,255,0.08),rgba(14,196,196,0.08));border-top:1px solid var(--line)}
+.bundle-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B92FF;background:rgba(43,91,255,0.15);padding:4px 10px;border-radius:5px;white-space:nowrap}
+.bundle-text{font-size:14px;color:var(--ink-2);font-weight:500;flex:1}
+.bundle-impl{font-size:12px;color:var(--ink-4);white-space:nowrap}
+@media(max-width:720px){
+  .cycle-tasks{grid-template-columns:1fr}
+  .cycle-task{border-right:none;border-bottom:1px solid var(--line)}
+  .cycle-task:last-child{border-bottom:none}
+  .cycle-modules{grid-template-columns:1fr}
+  .module-bar.m-pooling{border-right:none;border-bottom:1px solid var(--line)}
+  .bundle-impl{display:none}
+}
+
+/* ── MISS CARDS ── */
+.miss-card{border-radius:16px;padding:24px 26px}
+.miss-rose{background:rgba(255,77,94,0.05);border:1px solid rgba(255,77,94,0.16)}
+.miss-amber{background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.16)}
+.miss-lbl{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px;display:block}
+.lbl-rose{color:var(--rose)}
+.lbl-amber{color:var(--amber)}
+.miss-body{font-size:14px;line-height:1.72;color:var(--ink-3)}
+.miss-body strong{color:var(--ink-2)}
+
+/* ── SELLERS (tabs) ── */
+.sellers-section{background:linear-gradient(160deg,#080C1A,#060A16);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:80px 0}
+.tab-bar{display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:12px;padding:4px;width:fit-content;margin-bottom:32px}
+.tab-btn{padding:9px 22px;border-radius:9px;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s;color:var(--ink-4);border:none;background:transparent;font-size:11px}
+.tab-btn.active{background:var(--bg-card);color:var(--ink-2);box-shadow:0 1px 6px rgba(0,0,0,0.5)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.seller-card{border:1px solid var(--line);border-radius:18px;padding:32px;max-width:720px}
+.seller-card-p{background:linear-gradient(135deg,rgba(43,91,255,0.1),rgba(43,91,255,0.03));border-color:rgba(43,91,255,0.26)}
+.seller-card-k{background:linear-gradient(135deg,rgba(14,196,196,0.08),rgba(14,196,196,0.02));border-color:rgba(14,196,196,0.24)}
+.seller-tag{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:5px 14px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+.tag-p{background:rgba(43,91,255,0.16);border:1px solid rgba(43,91,255,0.36);color:#7FA0FF}
+.tag-k{background:rgba(14,196,196,0.13);border:1px solid rgba(14,196,196,0.32);color:#3DD4D4}
+.seller-card h3{font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-0.014em;color:#fff;margin-bottom:12px;line-height:1.3}
+.seller-intro{font-size:14.5px;line-height:1.65;color:var(--ink-3);margin-bottom:22px}
+.pitch-list{display:flex;flex-direction:column;gap:12px}
+.pitch-item{display:flex;align-items:flex-start;gap:11px;font-size:14px;line-height:1.62;color:var(--ink-3)}
+.pitch-check{width:18px;height:18px;border-radius:5px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
+.chk-p{background:rgba(43,91,255,0.18);color:#6B92FF}
+.chk-k{background:rgba(14,196,196,0.16);color:var(--teal)}
+.pitch-item strong{color:var(--ink-2)}
+
+/* ── ACCORDION ── */
+.accordion{display:flex;flex-direction:column;gap:10px}
+details.acc{background:var(--bg-card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .2s}
+details.acc[open]{border-color:rgba(43,91,255,0.32)}
+details.acc summary{display:flex;align-items:center;gap:12px;padding:20px 24px;cursor:pointer;list-style:none;user-select:none;-webkit-tap-highlight-color:transparent}
+details.acc summary::-webkit-details-marker{display:none}
+.acc-tag{flex-shrink:0;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--rose);background:rgba(255,77,94,0.12);border-radius:6px;padding:3px 9px}
+.acc-q{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink);flex:1;line-height:1.3}
+.acc-chevron{width:20px;height:20px;flex-shrink:0;color:var(--ink-4);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+details.acc[open] .acc-chevron{transform:rotate(180deg)}
+.acc-body{padding:0 24px 22px;border-top:1px solid var(--line);margin-top:-2px}
+.acc-body p{font-size:14.5px;line-height:1.72;color:var(--ink-3);padding-top:18px}
+.section-light details.acc{background:#fff;border-color:#E2E6EF}
+.section-light details.acc[open]{border-color:#93AAF0}
+.section-light .acc-q{color:#0B0F1A}
+.section-light .acc-body{border-color:#E2E6EF}
+.section-light .acc-body p{color:#4B5366}
+
+/* ── CASE ── */
+.case-card{background:var(--bg-card);border:1px solid var(--line);border-radius:20px;padding:36px 40px}
+@media(max-width:640px){.case-card{padding:24px 20px}}
+.case-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+.case-badge{background:rgba(255,255,255,0.05);border:1px solid var(--line-m);border-radius:12px;padding:10px 18px;font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink-2);flex-shrink:0}
+.tags-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{display:inline-flex;align-items:center;padding:5px 13px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink-3)}
+
+/* ── CTA ── */
+.cta-section{background:linear-gradient(160deg,#080D1E,#04070F);padding:88px 0;border-top:1px solid var(--line)}
+.cta-inner{text-align:center;max-width:620px;margin:0 auto}
+.cta-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(43,91,255,0.13);border:1px solid rgba(43,91,255,0.3);border-radius:999px;padding:7px 16px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7FA0FF;margin-bottom:20px}
+.cta-inner h2{font-family:var(--display);font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-0.028em;line-height:1.08;margin-bottom:16px}
+.cta-inner h2 .accent{background:linear-gradient(135deg,#4D78FF,#0EC4C4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-inner p{font-size:15.5px;line-height:1.7;color:var(--ink-3);margin-bottom:30px}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.cta-note{margin-top:20px;font-size:12.5px;color:var(--ink-4);font-family:var(--mono);letter-spacing:.03em}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--line);padding:26px 0 34px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-lbl{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark"></span>
+      <span>Pooling</span>
+      <span class="x-sep">×</span>
+      <span class="partner-label">Контур</span>
+    </a>
+    <div class="nav-right">
+      <span class="nav-badge">Бандл · 2026</span>
+      <a href="#cta" class="btn btn-primary">Подключить клиента →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- DEADLINE BAR -->
+<div class="deadline">
+  <div class="container deadline-inner">
+    <span class="deadline-label">До обязательного ЭТрН</span>
+    <div class="deadline-units">
+      <div class="deadline-unit">
+        <span class="deadline-num" id="cd-days">—</span>
+        <span class="deadline-unit-lbl">дней</span>
+      </div>
+      <span class="deadline-colon">:</span>
+      <div class="deadline-unit">
+        <span class="deadline-num" id="cd-hours">—</span>
+        <span class="deadline-unit-lbl">часов</span>
+      </div>
+      <span class="deadline-colon">:</span>
+      <div class="deadline-unit">
+        <span class="deadline-num" id="cd-mins">—</span>
+        <span class="deadline-unit-lbl">минут</span>
+      </div>
+      <span class="deadline-colon">:</span>
+      <div class="deadline-unit">
+        <span class="deadline-num" id="cd-secs">—</span>
+        <span class="deadline-unit-lbl">секунд</span>
+      </div>
+    </div>
+    <span class="deadline-copy"><strong>1 сентября 2026</strong> — ЭТрН становится обязательным.<br>Клиенты, начавшие сейчас, переходят спокойно.</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-grid"></div>
+  <div class="container" style="position:relative">
+    <div class="hero-eyebrow reveal">
+      <span class="hero-dot"></span>
+      Совместный продукт Pooling × Контур
+    </div>
+    <h1 class="reveal">
+      От поиска перевозчика —
+      до <span class="accent">подписанного ЭПД</span>.
+      Весь процесс в 1С. Без ручной работы.
+    </h1>
+    <p class="hero-sub reveal">
+      Любая перевозка — это три задачи: <strong>выбрать схему доставки, найти исполнителя, оформить документы.</strong>
+      Адаптер Контура закрывает только третью. Pooling 1C закрывает первые две — и передаёт данные в адаптер автоматически.
+    </p>
+
+    <!-- Мини-схема трёх задач -->
+    <div class="hero-flow reveal">
+      <div class="hf-step hf-blue">
+        <div class="hf-n">ЗАДАЧА 01</div>
+        <div class="hf-title">Поиск схемы доставки</div>
+        <div class="hf-detail">FTL, сборная, экспедирование — модель под груз и маршрут</div>
+        <span class="hf-badge badge-p">Pooling 1C</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-blue">
+        <div class="hf-n">ЗАДАЧА 02</div>
+        <div class="hf-title">Поиск исполнителя</div>
+        <div class="hf-detail">Перевозчик, ТС, водитель — через тендер или контракт</div>
+        <span class="hf-badge badge-p">Pooling 1C</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-teal">
+        <div class="hf-n">ЗАДАЧА 03</div>
+        <div class="hf-title">Оформление документов</div>
+        <div class="hf-detail">ЭТрН, заказ-заявка, поручение, расписка — юридически значимо</div>
+        <span class="hf-badge badge-k">Адаптер Контура</span>
+      </div>
+      <div class="hf-connector">›</div>
+      <div class="hf-step hf-result">
+        <div class="hf-n">РЕЗУЛЬТАТ</div>
+        <div class="hf-title">Весь цикл в 1С</div>
+        <div class="hf-detail">Без ручной работы, без Excel, без внешних TMS</div>
+        <span class="hf-badge badge-ok">Бандл Pooling × Контур</span>
+      </div>
+    </div>
+
+    <div class="hero-actions reveal">
+      <a href="#cta" class="btn btn-primary btn-primary-lg">Подключить клиента →</a>
+      <a href="#how" class="btn btn-ghost">Как устроено</a>
+    </div>
+
+    <div class="hero-stats reveal mt-40" style="margin-top:56px">
+      <div class="stat-cell">
+        <div class="stat-num">0</div>
+        <div class="stat-lbl">ручных операций при переносе данных в ЭПД</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num" data-countup="4" data-suffix=" типа">4 типа</div>
+        <div class="stat-lbl">ЭТрН, заказ-заявка, расписка, поручение — на одной логике</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">Весь цикл</div>
+        <div class="stat-lbl">от поиска перевозчика и выбора схемы — до готового ЭПД</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">Bacardi</div>
+        <div class="stat-lbl">алкоголь, ЕГАИС, экспедиторские схемы — в промышленной эксплуатации</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- URGENCY -->
+<div class="urgency">
+  <div class="container urgency-inner">
+    <div class="urgency-ico">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+    </div>
+    <p class="urgency-txt"><strong>ЭПД становится обязательным.</strong> Компании без выстроенного процесса внедряют в режиме пожара — с ошибками и рисками. Клиенты, которые начнут сейчас, переходят с первого рейса.</p>
+    <span class="urgency-chip">⚡ Окно для лёгкого старта сужается</span>
+  </div>
+</div>
+
+<!-- PROBLEMS -->
+<section class="section">
+  <div class="container">
+    <span class="eyebrow eyebrow-blue reveal">Почему клиенты застревают</span>
+    <h2 class="h-section mw-660 reveal">Пять болей, с которыми к вам приходят</h2>
+    <p class="sub mt-10 reveal" style="max-width:620px">Каждая решается связкой. Используй как открытие разговора.</p>
+
+    <div class="problem-list mt-28">
+      <div class="problem-item reveal">
+        <span class="problem-num">01</span>
+        <p class="problem-txt"><strong>«Логист не понимает, по какой модели отправлять задание перевозчику»</strong> — FTL может идти как по прямому договору, так и через экспедитора. Каждый вариант требует своего документа: поручение экспедитору или заказ-заявка. Без структурированных данных в 1С это решается вручную каждый раз.</p>
+      </div>
+      <div class="problem-item reveal">
+        <span class="problem-num">02</span>
+        <p class="problem-txt"><strong>«Данные разбросаны по TMS, Excel, почте и мессенджерам перевозчика»</strong> — логист тратит часы на сбор информации для одной ЭТрН. При 50+ рейсах в месяц это производственная проблема.</p>
+      </div>
+      <div class="problem-item reveal">
+        <span class="problem-num">03</span>
+        <p class="problem-txt"><strong>«Нам нужно ЭТрН, но мы не знаем с чего начать — у нас алкоголь, ЕГАИС, несколько экспедиторов»</strong> — сложные сценарии откладываются на «потом» годами. Потом станет обязательным.</p>
+      </div>
+      <div class="problem-item reveal">
+        <span class="problem-num">04</span>
+        <p class="problem-txt"><strong>«IT написали кастомную интеграцию под ЭПД, но она ломается на каждом новом XML-сценарии»</strong> — поддержка кастомного backend съедает больше ресурсов, чем само решение.</p>
+      </div>
+      <div class="problem-item reveal">
+        <span class="problem-num">05</span>
+        <p class="problem-txt"><strong>«Мы управляем перевозкой вне 1С, поэтому бухгалтерия всё время просит данные заново»</strong> — данные перевозки не живут в 1С ERP, а значит каждый документ — ручная работа.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how" style="padding-top:0">
+  <div class="container">
+    <span class="eyebrow eyebrow-blue reveal">Как устроено решение</span>
+    <h2 class="h-section mw-680 reveal">Три задачи. Два модуля. Один контур.</h2>
+    <p class="sub mt-10 reveal" style="max-width:660px">Любая перевозка — это поиск схемы, поиск исполнителя и оформление документов. Pooling 1C закрывает первые две задачи. Адаптер Контура — третью. Вместе — полный цикл в 1С без ручной работы.</p>
+
+    <div class="cycle-diagram mt-32 reveal">
+      <!-- Шапка -->
+      <div class="cycle-top-label">Управление перевозкой — это всегда три задачи</div>
+
+      <!-- 3 задачи -->
+      <div class="cycle-tasks">
+        <div class="cycle-task t-pooling">
+          <div class="task-num">ЗАДАЧА 01</div>
+          <div class="task-name">Поиск схемы доставки</div>
+          <div class="task-detail">FTL, сборная или экспедирование — <strong>выбор модели</strong> зависит от груза, маршрута и контрагента. Каждая схема требует своего документа.</div>
+        </div>
+        <div class="cycle-task t-pooling">
+          <div class="task-num">ЗАДАЧА 02</div>
+          <div class="task-name">Поиск исполнителя</div>
+          <div class="task-detail">Тендер или контракт — выбор перевозчика или экспедитора, согласование ТС и водителя, фиксация условий и статусов.</div>
+        </div>
+        <div class="cycle-task t-kontur">
+          <div class="task-num">ЗАДАЧА 03</div>
+          <div class="task-name">Оформление документов</div>
+          <div class="task-detail">ЭТрН, заказ-заявка, поручение экспедитору, экспедиторская расписка — <strong>юридически значимый обмен</strong> с перевозчиком.</div>
+        </div>
+      </div>
+
+      <!-- Покрытие модулями -->
+      <div class="cycle-modules">
+        <div class="module-bar m-pooling">
+          <span class="module-name">Pooling 1C</span>
+          <span class="module-scope">закрывает поиск схемы и поиск исполнителя внутри 1С ERP</span>
+          <span class="module-tasks-tag">
+            <span class="mtag">01</span>
+            <span class="mtag">02</span>
+          </span>
+        </div>
+        <div class="module-bar m-kontur">
+          <span class="module-name">Адаптер Контура</span>
+          <span class="module-scope">формирует и обменивает пакет ЭПД</span>
+          <span class="module-tasks-tag">
+            <span class="mtag">03</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Результат бандла -->
+      <div class="cycle-bundle">
+        <span class="bundle-badge">БАНДЛ</span>
+        <span class="bundle-text">Весь цикл в 1С — от поиска перевозчика и выбора схемы до подписанного ЭПД. Без ручной работы.</span>
+        <span class="bundle-impl">Pooling внедряет под ключ</span>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-20">
+      <div class="card reveal">
+        <div class="ico ico-blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        </div>
+        <h3 class="h-card" style="color:#fff">Pooling 1C — закрывает весь цикл управления перевозкой</h3>
+        <p class="sub mt-10" style="font-size:14px">Внутри 1С ERP появляется объект Бронирование — центр перевозки. Закрывает блок поиска транспорта и выбора схемы доставки (FTL, сборная, экспедирование), определяет модель документа (поручение или заказ-заявка) и хранит всё: маршрут, даты, перевозчика, ТС, водителя, статусы, стоимость, историю изменений.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-teal">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M9 13h6M9 17h6"/></svg>
+        </div>
+        <h3 class="h-card" style="color:#fff">Адаптер Контура — формирует и обменивает ЭПД</h3>
+        <p class="sub mt-10" style="font-size:14px">На основании данных из Бронирования собирает нужный пакет: ЭТрН, заказ-заявку, экспедиторскую расписку, поручение. Учитывает алкоголь, ЕГАИС, аутбаунд, инбаунд, утилизацию, экспедиторские схемы.</p>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-16">
+      <div class="miss-card miss-rose reveal">
+        <span class="miss-lbl lbl-rose">⚡ Без Pooling 1C</span>
+        <p class="miss-body">Адаптер Контура не закрывает блок поиска перевозчика и выбора схемы доставки. Логист по-прежнему вручную разбирается — FTL идёт по прямому договору или через экспедитора, и какой документ выписывать. <strong>Без Pooling 1C эта часть процесса остаётся неавтоматизированной.</strong></p>
+      </div>
+      <div class="miss-card miss-amber reveal">
+        <span class="miss-lbl lbl-amber">⚡ Без адаптера Контура</span>
+        <p class="miss-body">Pooling 1C управляет перевозкой, но выпуск ЭПД приходится либо дорабатывать с нуля, либо поддерживать кастомный backend. <strong>Масштабировать такое сложнее.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="section section-alt">
+  <div class="container">
+    <span class="eyebrow eyebrow-blue reveal">Что получает клиент</span>
+    <h2 class="h-section mw-680 reveal mt-10">Шесть конкретных эффектов</h2>
+    <div class="grid-3 mt-32">
+      <div class="card reveal">
+        <div class="ico ico-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Весь цикл — не часть</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Поиск транспорта, выбор схемы доставки, определение модели документа, формирование ЭПД — всё в одной связке. Не часть вопросов, а все элементы управления перевозкой.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Нет ручного переноса</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Данные для ЭПД берутся напрямую из Бронирования. Логист не переносит руками ничего.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 9 11l4 4 8-8"/><path d="M21 7h-6v6"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Быстрее масштабирование ЭПД</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Новые типы документов строятся на той же связке — без разработки с нуля под каждый сценарий.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="20" cy="14" r="2"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Сложные сценарии — из коробки</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Алкоголь, ЕГАИС, аутбаунд, инбаунд, утилизация, экспедиторские схемы — всё учтено. Bacardi уже работает именно так.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-rose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Меньше кастомной разработки</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Вместо доработки backend под каждый XML-сценарий — готовая экспертиза Контура по ЭПД и Pooling по транспортным процессам.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico ico-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12a3 3 0 0 0 3 3h9"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/></svg></div>
+        <h3 class="h-card" style="color:#fff;font-size:16px">Контроль изменений</h3>
+        <p class="sub mt-10" style="font-size:13.5px">Изменилась перевозка — Pooling 1C пересоздаёт Бронирование, Контур обновляет документы и уведомляет перевозчиков автоматически.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR SELLERS (tabs) -->
+<section class="sellers-section">
+  <div class="container">
+    <span class="eyebrow eyebrow-blue reveal">Для продающих подразделений</span>
+    <h2 class="h-section reveal mt-10" style="max-width:700px">Два продукта — одна сделка</h2>
+    <p class="sub mt-10 reveal" style="max-width:600px;margin-bottom:28px">Разные ситуации с клиентом — разный заход. Выбери свою команду.</p>
+
+    <div class="tab-bar reveal">
+      <button class="tab-btn active" data-tab="tab-pooling">Команда Pooling</button>
+      <button class="tab-btn" data-tab="tab-kontur">Команда Контур</button>
+    </div>
+
+    <div id="tab-pooling" class="tab-panel active reveal">
+      <div class="seller-card seller-card-p">
+        <span class="seller-tag tag-p">Команда Pooling</span>
+        <h3>Если клиент говорит про управление перевозкой или ЭТрН в 1С</h3>
+        <p class="seller-intro">Твой продукт закрывает не только документы — он закрывает весь процесс: поиск транспорта, выбор схемы, определение модели документа. Контур закрывает то, что Pooling не делает — юридически значимый обмен. Вместе — полный цикл без трудозатрат.</p>
+        <div class="pitch-list">
+          <div class="pitch-item">
+            <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Питч:</strong> «Адаптер Контура сам не знает, нужно ли поручение экспедитору или заказ-заявка. Pooling 1C это определяет автоматически — по схеме доставки в Бронировании»</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Демо-сценарий:</strong> Показать Бронирование → выбор схемы FTL/экспедирование → автоматический тип документа → готовый ЭТрН. Без переноса руками.</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Аргумент для IT:</strong> «Не нужно поддерживать кастомный XML-маппинг — логика в продуктах двух компаний с сертификацией»</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-p"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Внедрение под ключ:</strong> Pooling устанавливает решение полностью — у команды большой опыт реализации ЭДО-проектов на базе адаптера Контура. Клиент не тратит ресурсы на интеграцию.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-kontur" class="tab-panel reveal">
+      <div class="seller-card seller-card-k">
+        <span class="seller-tag tag-k">Команда Контур</span>
+        <h3>Если клиент спрашивает про ЭПД, но процесс выбора перевозчика не выстроен</h3>
+        <p class="seller-intro">Адаптер закрывает формирование документов — но не закрывает блок поиска перевозчика и выбора схемы. Без этого логист по-прежнему вручную решает: FTL или экспедирование, поручение или заказ-заявка. Pooling 1C снимает этот вопрос.</p>
+        <div class="pitch-list">
+          <div class="pitch-item">
+            <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Питч:</strong> «Адаптер Контура не знает, нужно ли поручение или заказ-заявка — это решается на уровне схемы доставки. Pooling 1C фиксирует схему в Бронировании, и адаптер автоматически получает нужный тип документа»</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Для финдира:</strong> «Вместо двух проектов внедрения — один контур, одно окно поддержки по транспорту и документам. Трудозатраты после перехода не растут»</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Аргумент против «сами напишем»:</strong> «Кастомный backend работает до первого нового XML-сценария или нового типа доставки. Потом — снова разработка»</span>
+          </div>
+          <div class="pitch-item">
+            <span class="pitch-check chk-k"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><strong>Referral:</strong> Передать лид в Pooling — они внедряют под ключ и берут на себя весь блок управления перевозкой. Совместный онбординг → быстрее к первому ЭТрН.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJECTIONS (accordion) -->
+<section class="section section-light">
+  <div class="container">
+    <span class="eyebrow eyebrow-blue reveal">Работа с возражениями</span>
+    <h2 class="h-section reveal mt-10" style="max-width:680px">Четыре вопроса — четыре готовых ответа</h2>
+    <p class="sub mt-10 reveal" style="max-width:640px">Нажми на вопрос и зачитай ответ прямо с экрана. Работает для обеих команд.</p>
+
+    <div class="accordion mt-28">
+      <details class="acc reveal">
+        <summary>
+          <span class="acc-tag">Клиент</span>
+          <span class="acc-q">«Зачем два модуля, если можно одним?»</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="acc-body"><p>Один модуль — половина пути. Pooling 1C даёт перевозке структуру внутри 1С: роли сторон, статусы, перевозчик, ТС, водитель — без этого адаптер Контура не знает что формировать. Адаптер Контура даёт этой структуре юридическую силу — без него перевозка управляется, но ЭПД не выходит. Вместе они закрывают путь от заявки до подписанного документа без единой ручной операции.</p></div>
+      </details>
+      <details class="acc reveal">
+        <summary>
+          <span class="acc-tag">Клиент</span>
+          <span class="acc-q">«У нас уже есть TMS — зачем Pooling 1C?»</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="acc-body"><p>TMS не отменяет задачу — она просто живёт снаружи 1С. Pooling 1C создаёт в 1С ERP центральный объект Бронирования, на котором Контур строит документы. Если ваша TMS остаётся — отлично, данные из неё всё равно нужно собрать в одном структурированном месте перед выпуском ЭПД. Эту роль берёт Pooling 1C.</p></div>
+      </details>
+      <details class="acc reveal">
+        <summary>
+          <span class="acc-tag">Клиент</span>
+          <span class="acc-q">«У нас алкоголь, ЕГАИС, утилизация — сложно»</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="acc-body"><p>Ровно под это решение и строилось. Pooling 1C хранит логику каждого сценария в Бронировании — отдельно для алкоголя и безалкоголки, аутбаунда, инбаунда, утилизации. Адаптер Контура учитывает эти различия при сборке пакета документов. Bacardi работает именно в этой конфигурации — в промышленной эксплуатации, не в пилоте.</p></div>
+      </details>
+      <details class="acc reveal">
+        <summary>
+          <span class="acc-tag">Клиент</span>
+          <span class="acc-q">«У нас уже есть своя разработка под ЭПД»</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="acc-body"><p>Своя разработка работает до следующего нового XML-сценария. Потом — снова IT, снова спринт, снова деньги. Связка Pooling 1C + Контур закрывает это готовой экспертизой: Pooling — по транспортному процессу, Контур — по всем форматам ЭПД. Расширять backend под каждый новый формат больше не нужно. Вопрос в том, сколько стоит поддержка того, что уже написано.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CASE -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="case-card reveal" style="margin-top:0">
+      <div class="case-top">
+        <div>
+          <span class="eyebrow eyebrow-blue" style="margin-bottom:10px">Кейс в промышленной эксплуатации</span>
+          <h2 class="h-section" style="color:#fff;max-width:600px">Bacardi — алкоголь, ЕГАИС, несколько экспедиторских схем. Всё в одном контуре.</h2>
+        </div>
+        <div class="case-badge">Bacardi</div>
+      </div>
+      <p style="font-size:15.5px;line-height:1.72;color:var(--ink-3);max-width:780px">У Bacardi одновременно идут перевозки алкогольной и безалкогольной продукции, ЕГАИС, аутбаунд и инбаунд, утилизация и экспедиторские сценарии. Раньше каждый из них требовал отдельной ручной настройки в TMS, Excel и переписки с экспедиторами. Pooling 1C хранит логику каждого сценария в Бронировании, адаптер Контура выпускает под него правильный пакет документов. <strong style="color:var(--ink-2)">Bacardi получает не интеграцию двух сервисов по отдельности, а один транспортно-документарный контур — от возникновения транспортной потребности до готового ЭПД.</strong></p>
+      <div class="tags-row">
+        <span class="tag">Алкоголь и безалкоголь</span>
+        <span class="tag">ЕГАИС</span>
+        <span class="tag">Outbound / Inbound</span>
+        <span class="tag">Утилизация</span>
+        <span class="tag">Экспедиторские схемы</span>
+        <span class="tag">Промышленная эксплуатация</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="cta-pill">Следующий шаг</div>
+      <h2>Закрыть весь процесс клиента — <span class="accent">от поиска до ЭПД</span></h2>
+      <p>Расскажи о клиенте: отрасль, сколько перевозок в месяц, какие схемы доставки используют (FTL, сборная, экспедирование), есть ли 1С ERP. Поможем сформировать предложение и провести совместное демо. Pooling внедряет под ключ.</p>
+      <div class="cta-actions">
+        <a href="https://pooling.me/consultation" class="btn btn-primary btn-primary-lg">Предложить клиенту бандл →</a>
+        <a href="https://t.me/pooling_sales" class="btn btn-teal" style="font-size:15px;padding:14px 22px;border-radius:11px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.667l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.978.892z"/></svg>
+          Написать в Telegram
+        </a>
+      </div>
+      <p class="cta-note">sales@pooling.me · совместное демо организуем в течение 2 рабочих дней</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="logo-mark"></span>
+      <span class="footer-lbl">Pooling × Контур · совместный продукт · 2026</span>
+    </div>
+    <span class="footer-lbl">Материал для продающих команд</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ── Scroll progress ── */
+  var bar = document.getElementById('scroll-progress');
+  function updateProgress(){
+    var h = document.documentElement;
+    var pct = (h.scrollTop || document.body.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    if(bar) bar.style.width = Math.min(pct,100)+'%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+
+  /* ── Countdown ── */
+  var TARGET = new Date('2026-09-01T00:00:00+03:00').getTime();
+  function pad(n){return n<10?'0'+n:String(n)}
+  function tick(){
+    var diff = Math.max(0, TARGET - Date.now());
+    var days  = Math.floor(diff/86400000);
+    var hours = Math.floor((diff%86400000)/3600000);
+    var mins  = Math.floor((diff%3600000)/60000);
+    var secs  = Math.floor((diff%60000)/1000);
+    var d=document.getElementById('cd-days'),
+        h=document.getElementById('cd-hours'),
+        m=document.getElementById('cd-mins'),
+        s=document.getElementById('cd-secs');
+    if(d)d.textContent=days;
+    if(h)h.textContent=pad(hours);
+    if(m)m.textContent=pad(mins);
+    if(s)s.textContent=pad(secs);
+  }
+  tick();
+  setInterval(tick,1000);
+
+  /* ── Tabs ── */
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      tabBtns.forEach(function(b){b.classList.remove('active')});
+      tabPanels.forEach(function(p){p.classList.remove('active')});
+      btn.classList.add('active');
+      var panel = document.getElementById(btn.dataset.tab);
+      if(panel) panel.classList.add('active');
+    });
+  });
+
+  /* ── Count-up ── */
+  function countUp(el, target, suffix, duration){
+    var start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/duration, 1);
+      var ease = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(ease*target) + (suffix||'');
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── Reveal on scroll ── */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce || !('IntersectionObserver' in window)){
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in')});
+    document.querySelectorAll('[data-countup]').forEach(function(el){
+      el.textContent = el.dataset.countup + (el.dataset.suffix||'');
+    });
+    return;
+  }
+
+  var statIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var el = e.target;
+        countUp(el, parseInt(el.dataset.countup, 10), el.dataset.suffix, 900);
+        statIO.unobserve(el);
+      }
+    });
+  },{threshold:0.3});
+  document.querySelectorAll('[data-countup]').forEach(function(el){
+    el.textContent = '0' + (el.dataset.suffix||'');
+    statIO.observe(el);
+  });
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var el = e.target;
+        var idx = Array.from(el.parentElement.children).indexOf(el);
+        el.style.transitionDelay = Math.min(idx,5)*60+'ms';
+        el.classList.add('in');
+        io.unobserve(el);
+      }
+    });
+  },{threshold:0.07, rootMargin:'0px 0px -4% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>
